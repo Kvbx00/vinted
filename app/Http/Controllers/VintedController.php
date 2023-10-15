@@ -22,6 +22,27 @@ class VintedController extends Controller
 
         $products = $response->json();
 
+        $sortOption = $request->input('sort_by');
+
+        // Sortowanie produktów
+        if ($sortOption === 'price_asc') {
+            usort($products['items'], function($a, $b) {
+                return floatval($a['price']) - floatval($b['price']);
+            });
+        } elseif ($sortOption === 'price_desc') {
+            usort($products['items'], function($a, $b) {
+                return floatval($b['price']) - floatval($a['price']);
+            });
+        } elseif ($sortOption === 'favorite_asc') {
+            usort($products['items'], function($a, $b) {
+                return intval($a['favourite_count']) - intval($b['favourite_count']);
+            });
+        } elseif ($sortOption === 'favorite_desc') {
+            usort($products['items'], function($a, $b) {
+                return intval($b['favourite_count']) - intval($a['favourite_count']);
+            });
+        }
+
         return view('products.index', [
             'products' => $products,
         ]);
