@@ -18,4 +18,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/products', [VintedController::class, 'getProducts']);
+Route::get('/products', [VintedController::class, 'searchProducts']);
