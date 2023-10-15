@@ -9,11 +9,14 @@ class VintedController extends Controller
 {
     public function searchProducts(Request $request)
     {
+        $timeoutInSeconds = 120;
+        $maxRedirects = 10;
+
         $cookie = $this->getCookie("https://www.vinted.fr/");
 
         $response = Http::withHeaders([
             'Cookie' => '_vinted_fr_session=' . $cookie,
-        ])->get('https://www.vinted.pl/api/v2/catalog/items', [
+        ])->timeout($timeoutInSeconds)->maxRedirects($maxRedirects)->get('https://www.vinted.pl/api/v2/catalog/items', [
             'search_text' => $request->input('search_text'),
         ]);
 

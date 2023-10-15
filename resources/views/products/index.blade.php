@@ -1,5 +1,11 @@
 <h1>Vinted Products</h1>
 
+<form action="{{ route('search.products') }}" method="get">
+    <label for="search_text">Wyszukaj produkty:</label>
+    <input type="text" id="search_text" name="search_text" required>
+    <button type="submit">Szukaj</button>
+</form>
+
 <ul>
     @foreach ($products['items'] as $product)
         <li>

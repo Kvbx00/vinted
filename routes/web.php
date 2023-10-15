@@ -18,4 +18,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/products', [VintedController::class, 'searchProducts']);
+Route::get('/products', [VintedController::class, 'searchProducts'])->name('search.products');
