@@ -14,8 +14,6 @@ use App\Http\Controllers\VintedController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
-Route::get('/products', [VintedController::class, 'searchProducts'])->name('search.products');
+
+Route::get('/', [VintedController::class, 'searchProducts'])->name('search.products');
