@@ -18,6 +18,8 @@ class VintedController extends Controller
             'Cookie' => '_vinted_fr_session=' . $cookie,
         ])->timeout($timeoutInSeconds)->maxRedirects($maxRedirects)->get('https://www.vinted.pl/api/v2/catalog/items', [
             'search_text' => $request->input('search_text'),
+            'page' => $request->input('page', 1),
+            'per_page' => 24,
         ]);
 
         $products = $response->json();
@@ -43,9 +45,16 @@ class VintedController extends Controller
             });
         }
 
+        $perPage = 24;
+        $currentPage = $request->input('page', 1);
+        $totalItems = count($products['items']);
+        $products = array_slice($products['items'], ($currentPage - 1) * $perPage, $perPage);
+        $products = new \Illuminate\Pagination\LengthAwarePaginator($products, $totalItems, $perPage, $currentPage);
+
         return view('products.index', [
             'products' => $products,
         ]);
+    
     }
 
     private function getCookie($url)

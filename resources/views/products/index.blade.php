@@ -14,7 +14,7 @@
 </form>
 
 <ul>
-    @foreach ($products['items'] as $product)
+    @foreach ($products as $product)
         <li>
             <p>{{ $product['brand_title'] }}</p>
             <p>{{ $product['title'] }}</p>
@@ -25,3 +25,5 @@
         </li>
     @endforeach
 </ul>
+<!-- Wyświetlanie paginacji -->
+{{ $products->appends(request()->input())->links() }}
