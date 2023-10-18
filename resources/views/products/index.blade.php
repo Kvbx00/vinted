@@ -15,19 +15,27 @@
                 <img src="https://static.vinted.com/assets/web-logo/default/logo.svg" alt="Vinted logo" class="logo">
             </a>
         </div>
+        <div class="search-bar">
+            <form action="{{ route('search.products') }}" method="get" class="form-group" id="form-group">
+                <input type="text" class="form-control" id="search_text" name="search_text" placeholder="Wyszukaj produkty...">
+            </form>
+        </div>
     </div>
 </header>
-<form id="sortForm" action="{{ route('search.products') }}" method="get">
-    <label for="sortowanie">Sortuj według:</label>
-    <select id="sortowanie" name="sortowanie">
-        <option value="default" {{ request('sortowanie') === 'default' ? 'selected' : '' }}>Domyślne</option>
-        <option value="nazwa" {{ request('sortowanie') === 'nazwa' ? 'selected' : '' }}>Nazwa</option>
-        <option value="cena" {{ request('sortowanie') === 'cena' ? 'selected' : '' }}>Cena</option>
-    </select>
-    <button type="submit">Sortuj</button>
-</form>
-
 <main class="container">
+
+    <div class="row">
+        <div class="sort">
+            <form id="sortForm" action="{{ route('search.products') }}" method="get">
+                <label for="sortowanie">Sortuj według:</label>
+                <select id="sortowanie" name="sortowanie">
+                    <option value="default" {{ request('sortowanie') === 'default' ? 'selected' : '' }}>Domyślne</option>
+                    <option value="nazwa" {{ request('sortowanie') === 'nazwa' ? 'selected' : '' }}>Nazwa</option>
+                    <option value="cena" {{ request('sortowanie') === 'cena' ? 'selected' : '' }}>Cena</option>
+                    <option value="serduszka" {{ request('sortowanie') === 'serduszka' ? 'selected' : '' }}>serduszka</option>
+                </select>
+            </form>
+        </div>
 
     <div class="col-12">
         <div class="product-container">
@@ -77,18 +85,18 @@
             @endforeach
         </div>
     </div>
-    <div class="pagination">
-        @for ($i = 1; $i <= $totalPages; $i++)
-            <a href="{{ route('search.products', ['page' => $i, 'sortowanie' => request('sortowanie')]) }}" class="{{ $currentPage == $i ? 'active' : '' }}">{{ $i }}</a>
-        @endfor
+        <div class="pagination">
+            {{ $products->links() }}
+        </div>
     </div>
+
 </main>
 
 
 </body>
 
 <script>
-    document.getElementById('sort_by').addEventListener('change', function () {
+    document.getElementById('sortowanie').addEventListener('change', function () {
         document.getElementById('sortForm').submit();
     });
     document.getElementById('search_text').addEventListener('keydown', function (event) {
