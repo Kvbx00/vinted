@@ -12,23 +12,27 @@ class VintedController extends Controller
 {
     public function searchProducts(Request $request)
     {
-        $perPage = 200;
+        $perPage = 216;
         $cookie = $this->getCookie("https://www.vinted.fr/");
 
-        if (!Session::has('produkty')) {
+        $searchText = $request->input('search_text');
+
+        if (!empty($searchText)) {
             $response = Http::withHeaders([
                 'Cookie' => '_vinted_fr_session=' . $cookie,
             ])->get('https://www.vinted.pl/api/v2/catalog/items', [
-                'search_text' => $request->input('search_text'),
+                'search_text' => $searchText,
                 'per_page' => $perPage,
             ]);
 
             $products = $response->json();
 
             Session::put('produkty', $products);
-        } else {
-            $products = Session::get('produkty');
+
+            return redirect()->route('search.products');
         }
+
+        $products = Session::get('produkty', []);
 
         $perPage = 24;
         $currentPage = request()->input('page', 1);
@@ -53,10 +57,11 @@ class VintedController extends Controller
         }
 
         $sort = request()->input('sort_by', 'default');
+        Session::put('sort_by', $sort);
 
         $products['items'] = collect($products['items'])
-            ->when($sort === 'cena', fn ($collection) => $collection->sortByDesc('price'))
-            ->when($sort === 'serduszka', fn ($collection) => $collection->sortByDesc('favourite_count'))
+            ->when($sort === 'cena', fn($collection) => $collection->sortByDesc('price'))
+            ->when($sort === 'serduszka', fn($collection) => $collection->sortByDesc('favourite_count'))
             ->values()
             ->all();
 
@@ -67,6 +72,7 @@ class VintedController extends Controller
         $products = new LengthAwarePaginator($currentPageItems, count($products['items']), $perPage, $currentPage, [
             'path' => Paginator::resolveCurrentPath(),
             'pageName' => 'page',
+            'query' => ['sort_by' => $sort],
         ]);
 
         return view('products.index', [
