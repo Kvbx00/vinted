@@ -4,24 +4,22 @@ namespace App\Http\Controllers;
 
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 
 class VintedController extends Controller
 {
-    public function searchProducts()
+    public function searchProducts(Request $request)
     {
-        $timeoutInSeconds = 120;
-        $maxRedirects = 10;
-        $perPage = 192;
-
+        $perPage = 200;
         $cookie = $this->getCookie("https://www.vinted.fr/");
 
-        // Sprawdź, czy dane są już w sesji
         if (!Session::has('produkty')) {
             $response = Http::withHeaders([
                 'Cookie' => '_vinted_fr_session=' . $cookie,
-            ])->timeout($timeoutInSeconds)->maxRedirects($maxRedirects)->get('https://www.vinted.pl/api/v2/catalog/items', [
+            ])->get('https://www.vinted.pl/api/v2/catalog/items', [
+                'search_text' => $request->input('search_text'),
                 'per_page' => $perPage,
             ]);
 
@@ -30,18 +28,6 @@ class VintedController extends Controller
             Session::put('produkty', $products);
         } else {
             $products = Session::get('produkty');
-        }
-
-        // Sortowanie i paginacja
-        $sortowanie = request()->input('sortowanie', 'default'); // Domyślne sortowanie
-        if ($sortowanie === 'cena') {
-            // Sortuj produkty według ceny
-            $products['items'] = collect($products['items'])->sortBy('price')->values()->all();
-        } elseif ($sortowanie === 'nazwa') {
-            // Sortuj produkty według nazwy
-            $products['items'] = collect($products['items'])->sortBy('brand_title')->values()->all();
-        }elseif ($sortowanie === 'serduszka') {
-            $products['items'] = collect($products['items'])->sortBy('favourite_count')->values()->all();
         }
 
         $perPage = 24;
@@ -56,7 +42,36 @@ class VintedController extends Controller
         return view('products.index', [
             'products' => $products,
         ]);
+    }
 
+    public function sortProducts()
+    {
+        $products = Session::get('produkty', []);
+
+        if (empty($products)) {
+            return view('products.index');
+        }
+
+        $sort = request()->input('sort_by', 'default');
+
+        $products['items'] = collect($products['items'])
+            ->when($sort === 'cena', fn ($collection) => $collection->sortByDesc('price'))
+            ->when($sort === 'serduszka', fn ($collection) => $collection->sortByDesc('favourite_count'))
+            ->values()
+            ->all();
+
+        $perPage = 24;
+        $currentPage = request()->input('page', 1);
+
+        $currentPageItems = array_slice($products['items'], ($currentPage - 1) * $perPage, $perPage);
+        $products = new LengthAwarePaginator($currentPageItems, count($products['items']), $perPage, $currentPage, [
+            'path' => Paginator::resolveCurrentPath(),
+            'pageName' => 'page',
+        ]);
+
+        return view('products.index', [
+            'products' => $products,
+        ]);
     }
 
     private function getCookie($url)

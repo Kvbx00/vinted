@@ -26,13 +26,12 @@
 
     <div class="row">
         <div class="sort">
-            <form id="sortForm" action="{{ route('search.products') }}" method="get">
+            <form id="sortForm" action="{{ route('sort.products') }}" method="get">
                 <label for="sortowanie">Sortuj według:</label>
-                <select id="sortowanie" name="sortowanie">
-                    <option value="default" {{ request('sortowanie') === 'default' ? 'selected' : '' }}>Domyślne</option>
-                    <option value="nazwa" {{ request('sortowanie') === 'nazwa' ? 'selected' : '' }}>Nazwa</option>
-                    <option value="cena" {{ request('sortowanie') === 'cena' ? 'selected' : '' }}>Cena</option>
-                    <option value="serduszka" {{ request('sortowanie') === 'serduszka' ? 'selected' : '' }}>serduszka</option>
+                <select id="sort_by" name="sort_by">
+                    <option value="default" {{ request('sort_by') === 'default' ? 'selected' : '' }}>Domyślne</option>
+                    <option value="cena" {{ request('sort_by') === 'cena' ? 'selected' : '' }}>Cena</option>
+                    <option value="serduszka" {{ request('sort_by') === 'serduszka' ? 'selected' : '' }}>serduszka</option>
                 </select>
             </form>
         </div>
@@ -96,7 +95,7 @@
 </body>
 
 <script>
-    document.getElementById('sortowanie').addEventListener('change', function () {
+    document.getElementById('sort_by').addEventListener('change', function () {
         document.getElementById('sortForm').submit();
     });
     document.getElementById('search_text').addEventListener('keydown', function (event) {

@@ -14,6 +14,5 @@ use App\Http\Controllers\VintedController;
 |
 */
 
-
-
 Route::get('/', [VintedController::class, 'searchProducts'])->name('search.products');
+Route::get('/sort', [VintedController::class, 'sortProducts'])->name('sort.products');
