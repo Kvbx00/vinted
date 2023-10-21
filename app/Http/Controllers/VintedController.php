@@ -28,11 +28,21 @@ class VintedController extends Controller
             $products = $response->json();
 
             Session::put('produkty', $products);
+        } else {
+            if (!Session::has('produkty')) {
+                $response = Http::withHeaders([
+                    'Cookie' => '_vinted_fr_session=' . $cookie,
+                ])->get('https://www.vinted.pl/api/v2/catalog/items', [
+                    'per_page' => $perPage,
+                ]);
 
-            return redirect()->route('search.products');
+                $products = $response->json();
+
+                Session::put('produkty', $products);
+            } else {
+                $products = Session::get('produkty');
+            }
         }
-
-        $products = Session::get('produkty', []);
 
         $perPage = 24;
         $currentPage = request()->input('page', 1);
