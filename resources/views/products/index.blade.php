@@ -16,7 +16,7 @@
             </a>
         </div>
         <div class="search-bar">
-            <form action="{{ route('search.products') }}" method="get" class="form-group" id="form-group">
+            <form action="{{ route('search.products') }}"  method="get" class="form-group" id="form-group">
                 <input type="text" class="form-control" id="search_text" name="search_text"
                        placeholder="Wyszukaj produkty...">
             </form>
@@ -47,7 +47,7 @@
                                 <img src="{{ $product['user']['photo']['thumbnails'][4]['url'] }}"
                                      alt="{{ $product['brand_title'] }} {{ $product['title'] }}" id="user-photo">
                             @else
-                                <img id="user-photo">
+                                <img src="images/userempty.png" id="user-photo">
                             @endif
                             <a id="user-nick">{{ $product['user']['login']}}</a>
                         </div>

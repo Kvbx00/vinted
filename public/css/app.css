@@ -127,14 +127,6 @@ form {
     margin-top: 20px;
 }
 
-footer {
-    background-color: #343a40;
-    color: #ffffff;
-    padding: 10px 0;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-}
 
 #user-photo {
     width: 24px;
@@ -228,6 +220,7 @@ select{
     background-position: 10px 10px;
     background-repeat: no-repeat;
     text-align: center;
+    padding: 3px;
 }
 
 .pagination{
@@ -242,7 +235,7 @@ select{
 .page-link {
     position: relative;
     display: block;
-    color: #0d6efd;
+    color: #007782;
     text-decoration: none;
     background-color: #fff;
     border: 1px solid #dee2e6;
@@ -256,6 +249,6 @@ select{
 .page-item.active .page-link {
     z-index: 3;
     color: #fff;
-    background-color: #0d6efd;
-    border-color: #0d6efd;
+    background-color: #007782;
+    border-color: #007782;
 }
